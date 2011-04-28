@@ -9,6 +9,7 @@ module Spree
         @attachment = Spree::Amazon::Asset.new(url)
         @alt = _alt.to_s
       end
+
     end
   end
 end

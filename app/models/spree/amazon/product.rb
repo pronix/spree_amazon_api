@@ -1,43 +1,6 @@
 require 'open-uri'
-# Spree::Amazon::Product.search("ruby")
-# Spree::Amazon::Product.find("B004DT6IGO")
-# Amazon::Ecs.item_lookup("B004DT6IGO", {:response_group =>"Large, Variations"})
 module Spree
   module Amazon
-
-    # For paginate
-    #
-    class ProductCollection < Array
-      attr_accessor_with_default :total_entries, 0
-      attr_accessor_with_default :total_pages,   0
-      attr_accessor_with_default :current_page,   1
-
-      def per_page
-        12
-      end
-      # The previous page number. Returns nil if on first page.
-      def previous_page
-        @current_page > 1 ? (@current_page - 1) : nil
-      end
-
-      # The next page number. Returns nil if on last page.
-      def next_page
-        @current_page < total_pages ? (@current_page + 1): nil
-      end
-
-      # Total number of pages with found results.
-      def total_pages
-        (@total_entries.to_i / per_page.to_f).ceil
-      end
-
-      def current_page
-        @current_page
-      end
-      def current_page=(v)
-        @current_page = v
-      end
-    end
-
 
     class Product < Spree::Amazon::Base
 
@@ -54,34 +17,42 @@ module Spree
         def name
           "Product"
         end
+
         def prepare_id(product_id)
           product_id.to_s
         end
 
-        # Товары для первой страницы
+        # Product for home page
         def root_page
           self.search(:q => "*")
         end
 
+        # Find product by ASIN
+        #
         def find(product_asin)
           new(mapped(SpreeEcs::Product.find(product_asin, { :response_group => "Large, Variations" }).items.first))
         end
 
-
+        # Search products
+        #
         def search(options={ })
           @result = SpreeEcs::Product.search(options)
           unless @result.has_error?
-            @collection = ProductCollection.new( @result.items.map { |item| new(mapped(item)) }||[] )
+            @collection = Spree::Amazon::ProductCollection.new( @result.items.map { |item| new(mapped(item)) }||[] )
             @collection.total_entries =  @result.total_pages
             @collection.current_page  = @result.item_page
           else
-            @collection = ProductCollection.new([])
+            @collection =  Spree::Amazon::ProductCollection.new([])
             @collection.total_entries =  1
             @collection.current_page = 1
           end
           return @collection.compact
         end
 
+        private
+
+        #
+        #
         def mapped(product_attributes)
           {
             :name        => product_attributes.get('itemattributes/title'),
@@ -96,6 +67,8 @@ module Spree
           }
         end
 
+        #
+        #
         def parse_images(product_attributes)
 
           result_images = [{ :small   => product_attributes.get('smallimage/url'),
@@ -117,6 +90,9 @@ module Spree
           end
           return result_images
         end
+
+        #
+        #
         def parse_variants(product_attributes)
           if product_attributes.get("variations/totalvariations").to_i  > 0
             product_attributes.get_elements("variations/item").map{ |v| mapped(v) }
@@ -125,6 +101,8 @@ module Spree
           end
         end
 
+        #
+        #
         def parse_variant_options(product_attributes)
           product_attributes.get_elements("variationattributes/variationattribute").map(&:get_hash)
         rescue
@@ -139,22 +117,30 @@ module Spree
 
       end # end class << self
 
+      # Product images
+      #
       def images
         (@images||[]).map{ |x| Spree::Amazon::Image.new(x, @name) }
       end
+
+      # Variants
+      #
       def variants
         @_variants ||= Spree::Amazon::VariantCollection.new((@variants||[]).map{ |x|
-                                                               Spree::Amazon::Variant.new(x.merge(:product => self)) })
+                                                              Spree::Amazon::Variant.new(x.merge(:product => self)) })
         @_variants
       end
+
       def has_variants?
         !@variants.blank?
       end
+
       def available?
         true
       end
+
       def possible_promotions
-        [false]
+        [ false ]
       end
 
       def has_stock?
