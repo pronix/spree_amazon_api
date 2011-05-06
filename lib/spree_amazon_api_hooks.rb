@@ -7,4 +7,16 @@ class SpreeAmazonApiHooks < Spree::ThemeSupport::HookListener
         </tr>
        )
   end
+
+  replace :cart_form do
+    %Q( <div id="cart-form">
+        <% if !!Spree::Config[:redirect_to_amazon] %>
+          <%= render 'shared/amazon_cart_form' %>
+        <% else %>
+          <%= render 'cart_form' %>
+        <% end %>
+        </div>
+      )
+  end
+
 end
