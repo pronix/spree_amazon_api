@@ -1,0 +1,15 @@
+<%= render :partial => 'admin/shared/configuration_menu' %>
+
+<h1><%= t("amazon_settings") %></h1>
+
+<table>
+  <tr>
+    <th scope="row"><%= t("redirect_to_amazon_on_buy") %>:</th>
+    <td><%=  Spree::Config[:redirect_to_amazon] %></td>
+  </tr>
+
+</table>
+
+<p><%= link_to_with_icon 'edit', t("edit"), edit_admin_amazon_path, :id => 'edit_admin_amazon_link' %></p>
+
+

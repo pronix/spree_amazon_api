@@ -9,7 +9,6 @@ Gem::Specification.new do |s|
   # s.author            = 'David Heinemeier Hansson'
   # s.email             = 'david@loudthinking.com'
   # s.homepage          = 'http://www.rubyonrails.org'
-  # s.rubyforge_project = 'actionmailer'
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")

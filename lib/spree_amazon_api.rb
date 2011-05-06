@@ -24,6 +24,10 @@ module SpreeAmazonApi
         options[:aWS_secret_key]           = amazon_options["secret_key"]
         options[:response_group]           = 'Large'
       end
+
+      AppConfiguration.class_eval do
+        preference :redirect_to_amazon, :boolean,  :default => false
+      end
     end
 
     config.to_prepare &method(:activate).to_proc
