@@ -1,13 +1,11 @@
-SpreeAmazonApi
-==============
+Configure Amazon access:
+add amazon.yml file to app root path.
+example:
+---
+development:
+  access_key_id: 0XQXXC6YV2C85DX1BF02
+  secret_key: fwLOn0Y/IUXEM8Hk49o7QJV+ryOscbhXRb6CmA5l
 
-Introduction goes here.
-
-
-Example
-=======
-
-Example goes here.
-
-
-Copyright (c) 2011 [name of extension creator], released under the New BSD License
+production:
+  access_key_id: 0XQXXC6YV2C85DX1BF02
+  secret_key: fwLOn0Y/IUXEM8Hk49o7QJV+ryOscbhXRb6CmA5l
