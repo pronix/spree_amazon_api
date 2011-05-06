@@ -3,28 +3,12 @@ module Spree
     class Taxon < Spree::Amazon::Base
       include ActiveModel::AttributeMethods
       extend ActiveModel::Callbacks
-      attr_accessor :id, :parent_id, :is_parent, :name, :status, :data, :is_root
+      attr_accessor :id, :parent_id, :is_parent, :name, :status, :data, :is_root, :search_index
       alias :is_parent? :is_parent
 
-      ROOT_TAXONS =
-        [
-         { :name => "Books",                :id => "283155" },
-         { :name => "Music",                :id => "5174" },
-         { :name => "DVD",                  :id => "2" },
-         { :name => "Toys",                 :id => "165793011" },
-         { :name => "Video Games",          :id => "4"},
-         { :name => "Software",             :id => "5" },
-         { :name => "Software Video Games", :id => "6"},
-         { :name => "Electronics",          :id => "7"},
-         { :name => "Tools",                :id => "8" },
-         { :name => "Sporting Goods",       :id => "9"},
-         { :name => "Art Supplies",         :id => "10"},
-         { :name => "Kitchen",              :id => "11"},
-         { :name => "Gourmet Food",         :id => "12"},
-         { :name => "Apparel",              :id => "13"},
-         { :name => "PC Hardware",          :id => "14"},
-         { :name => "VHS",                  :id => "15"}
-        ]
+
+      ROOT_TAXONS = YAML.load( File.open(File.join(File.dirname(__FILE__), "../../../../data/category.yml")  ) )
+
 
       class << self
         attr_accessor :root_category
@@ -32,6 +16,7 @@ module Spree
           @root_category ||=  new(:name => "Category", :id => "0000", :is_root => true)
           @root_category
         end
+
         # Таксоны верхнего уровня
         #
         def roots
@@ -39,11 +24,17 @@ module Spree
         end
 
         def find(cid)
-          new(ROOT_TAXONS.find{ |x| x[:id] == cid.to_s})
+          new(ROOT_TAXONS.find{ |x| x[:id].to_s == cid.to_s}||mapping(SpreeEcs::Taxon.find(cid)))
         end
 
 
-        def search(options)
+
+        def mapping(raw_browse_node)
+          doc = raw_browse_node.doc
+          { :name => (doc/'browsenodes/browsenode/name/').to_s.gsub('&amp;', '&'),
+            :id => (doc/'browsenodes/browsenode/browsenodeid/').to_s,
+            :search_index => "Books"
+          }
 
         end
       end # end class << self
@@ -56,7 +47,7 @@ module Spree
       # Products
       #
       def products
-        [ ]
+        Spree::Amazon::Product.search( { :q => '', :browse_node => self.id })
       end
 
       def root
@@ -67,17 +58,26 @@ module Spree
         @id.to_s
       end
 
+      # (s.doc/'browsenodes/browsenode/children/browsenode').map{|v| { :name => (v/'name/').to_s, :id => (v/'browsenodeid/').to_s } }
+
       def children
-        # (data.doc/'browsenode/children/browsenode').collect{|x|
-        #   self.class.new( { :id => (x/'browsenodeid/').to_s,
-        #                     :name => (x/'name/').to_s,
-        #                     :isroot => (x/'iscategoryroot/').to_s.to_i  }
-        #                   )
-        # }
-        if is_root
-          ROOT_TAXONS.map{ |x| self.class.new(x) }
-        else
-          []
+        if @is_root
+           ROOT_TAXONS.map{ |x| self.class.new(x) }
+         else
+          if children_category_id = ( (((data.doc/'browsenode/children/browsenode').find{ |x| (x/'name/').to_s == "Categories" })/'browsenodeid/').to_s rescue nil)
+            (SpreeEcs::Taxon.find(children_category_id).doc/'browsenode/children/browsenode').collect{|x|
+              self.class.new({ :id => (x/'browsenodeid/').to_s,
+                               :name => (x/'name/').to_s.gsub('&amp;', '&'),
+                               :search_index => self.search_index,
+                               :parent_id => self.id
+                             })
+            }
+          else
+            (data.doc/'browsenodes/browsenode/children/browsenode').map{|v|
+              self.class.new({ :name => (v/'name/').to_s, :id => (v/'browsenodeid/').to_s,
+                               :search_index => self.search_index, :parent_id => self.id})
+            }
+          end
         end
 
       end

@@ -10,7 +10,7 @@ module Spree::Search
       end
 
       if @properties[:taxon].present?
-        options.merge!({ :search_index => taxon.try(:name) })
+        options.merge!({ :search_index => taxon.try(:search_index), :browse_node => taxon.try(:id) })
       end
 
       Spree::Amazon::Product.search(options)

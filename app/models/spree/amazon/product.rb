@@ -70,11 +70,15 @@ module Spree
         #
         #
         def parse_images(product_attributes)
-
-          result_images = [{ :small   => product_attributes.get('smallimage/url'),
-                             :mini    => product_attributes.get('smallimage/url'),
-                             :product => product_attributes.get('mediumimage/url'),
-                             :large   => product_attributes.get('largeimage/url') } ]
+          result_images = []
+          unless product_attributes.get('smallimage/url').blank?
+            result_images  << {
+              :small   => product_attributes.get('smallimage/url'),
+              :mini    => product_attributes.get('smallimage/url'),
+              :product => product_attributes.get('mediumimage/url'),
+              :large   => product_attributes.get('largeimage/url')
+            }
+          end
           @imagesets = product_attributes.get_element("imagesets").get_elements("imageset") rescue nil
           unless @imagesets.blank?
             @imagesets.each do |imageset|
@@ -120,7 +124,7 @@ module Spree
       # Product images
       #
       def images
-        (@images||[]).map{ |x| Spree::Amazon::Image.new(x, @name) }
+        @images.blank? ? [] : @images.map{ |x| Spree::Amazon::Image.new(x, @name) }
       end
 
       # Variants

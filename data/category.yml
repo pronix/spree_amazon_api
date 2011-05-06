@@ -1,0 +1,197 @@
+---
+- :name: Amazon Instant Video
+  :id: 16261631
+  :search_index: Books
+- :name: Appliances
+  :id:  2619525011
+  :search_index: Books
+- :name: Apps for Android
+  :id: 2350149011
+  :search_index: Books
+- :name: Arts, Crafts & Sewing
+  :id:  2617941011
+  :search_index: Books
+- :name: Automotive
+  :id:  15684181
+  :search_index: Books
+- :name: Baby
+  :id:  165796011
+  :search_index: Books
+- :name: Beauty
+  :id:  3760911
+  :search_index: Books
+- :name: Books
+  :id: 283155
+  :search_index: Books
+- :name: Cell Phones & Accessories
+  :id:  2335752011
+  :search_index: Books
+- :name: Clothing & Accessories
+  :id: 1036592
+  :search_index: Books
+- :name: Electronics
+  :id: 172282
+  :search_index: Books
+- :name: Grocery & Gourmet Food
+  :id: 16310101
+  :search_index: Books
+- :name: Health & Personal Care
+  :id: 3760901
+  :search_index: Books
+- :name: Home, Garden & Pets
+  :id: 1055398
+  :search_index: Books
+- :name: Industrial & Scientific
+  :id:  16310091
+  :search_index: Books
+- :name: Jewelry
+  :id:  3367581
+  :search_index: Books
+- :name: Kindle Strore
+  :id: 133141011
+  :search_index: Books
+- :name: Magazines & Newspapers
+  :id: 599858
+  :search_index: Books
+- :name: Movies & TV
+  :id: 130
+  :search_index: Books
+- :name: Amazon MP3 Store
+  :id: 163856011
+  :search_index: Books
+- :name: Music
+  :id:  5174
+  :search_index: Books
+- :name: Musical Instruments
+  :id:  11091801
+  :search_index: Books
+- :name: Office Products
+  :id:  1064954
+  :search_index: Books
+- :name: Shoes
+  :id:  672123011
+  :search_index: Books
+- :name: Software
+  :id:  229534
+  :search_index: Books
+- :name: Sports & Outdoors
+  :id:  3375251
+  :search_index: Books
+- :name: Tools & Home Improvement
+  :id:  228013
+  :search_index: Books
+- :name: Toys & Games
+  :id:  165793011
+  :search_index: Books
+- :name: Video Games
+  :id:  468642
+  :search_index: Books
+- :name: Watches
+  :id:  377110011
+  :search_index: Books
+
+
+
+
+# - :name: Genres
+#   :id: 16261641
+# - :name: Accessories
+#   :id: 1268192011
+# - :name: Kindle eBooks
+#   :id: 1286228011
+# - :name: Kindle Newspapers
+#   :id: 1263068011
+# - :name: Kindle Magazines
+#   :id: 1263069011
+# - :name: Games
+#   :id: 2478844011
+# - :name: Game Downloads
+#   :id: 979455011
+# - :name: Software Downloads
+#   :id: 1233514011
+# - :name: Audible Audiobooks
+#   :id: 2402172011
+# - :name: New & Notable Audible Audiobooks | Audible New Releases
+#   :id: 2669348011
+# - :name: Audible Listener Favorites | Audible Audiobooks
+#   :id: 2669344011
+# - :name: New & Used Textbooks
+#   :id: 465600
+# - :name: Audiobooks
+#   :id: 368395011
+# - :name: Blu-ray Store
+#   :id: 193640011
+# - :name: Televisions & Video
+#   :id:  1266092011
+# - :name: Home Audio & Theater
+#   :id:  667846011
+# - :name: Camera & Photo
+#   :id:  502394
+# - :name: MP3 Players & Accessories
+#   :id:  172630
+# - :name: Car Electronics
+#   :id:  1077068
+# - :name: Laptops
+#   :id:  565108
+# - :name: Desktops
+#   :id:  565098
+# - :name: Computer Accessories
+#   :id:  172456
+# - :name: Internal Desktop Components
+#   :id:  193870011
+# - :name: PC Games
+#   :id:  229575
+# - :name: Printers
+#   :id:  172635
+# - :name: Kitchen & Dining
+#   :id:  284507
+# - :name:  Furniture & D\xC3\xA9cor
+#   :id:  1057794
+# - :name: Bedding & Bath
+#   :id:  1057792
+# - :name: Patio, Lawn & Garden
+#   :id:  286168
+# - :name: Power & Hand Tools
+#   :id:  328182011
+# - :name: Lamps & Light Fixtures
+#   :id:  495224
+# - :name: Kitchen & Bath Fixtures
+#   :id:  3754161
+# - :name: Hardware
+#   :id:  511228
+# - :name: Building Supplies
+#   :id:  551240
+# - :name: Pet Supplies
+#   :id:  12923371
+# - :name: Natural & Organic
+#   :id:  51537011
+# - :name: "Kids` & Baby Clothing"
+#   :id: 1040662
+# - :name: Kids & Family
+#   :id: 471306
+# - :name: Accessories
+#   :id:  1036700
+# - :name: Luggage
+#   :id:  15743251
+# - :name: Exercise & Fitness
+#   :id:  3407731
+# - :name: Outdoor Recreation
+#   :id:  706814011
+# - :name: Clothing
+#   :id:  2206626011
+# - :name: Team Sports
+#   :id:  706809011
+# - :name: Bikes & Scooters
+#   :id:  2232464011
+# - :name: Golf
+#   :id:  3410851
+# - :name: Boating & Water Sports
+#   :id:  3421331
+# - :name: Fan Shop
+#   :id:  3386071
+# - :name: Tools & Equipment
+#   :id:  15706941
+# - :name: Wheels & Tires
+#   :id:  15706571
+# - :name: Motorcycle & ATV
+#   :id:  346333011
