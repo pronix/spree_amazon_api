@@ -15,7 +15,7 @@ module Spree
         attr_accessor :root_category
 
         def root_category
-          @root_category ||=  new(:name => "Category", :id => "0000", :is_root => true)
+          @root_category ||=  new(:name => "Categories", :id => "0000", :is_root => true)
           @root_category
         end
 
@@ -44,7 +44,7 @@ module Spree
       end
 
       def root
-        self.class.root_category
+        is_root ? self.class.root_category : self
       end
 
       def permalink
@@ -52,8 +52,8 @@ module Spree
       end
 
       def children
-        if @is_root
-           ROOT_TAXONS.map{ |x| self.class.new(x) }
+        if self.id.to_s == '0000'
+          self.class.roots
         else
           @_children ||= (@children||[ ]).map{ |v| self.class.new(v)}
           @_children
@@ -74,6 +74,9 @@ module Spree
       end
       def applicable_filters
         [ ]
+      end
+      def is_root
+        Spree::Amazon::Taxon.roots.find{|v| v.id.to_s == self.id.to_s }
       end
     end
   end

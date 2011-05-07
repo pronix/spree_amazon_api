@@ -9,7 +9,7 @@ module SpreeEcs
 
         @query = options.delete(:q)|| (options[:browse_node] ? '' : '*')
         options[:sort] = "salesrank" if options[:search_index] && options[:search_index].to_s != 'All'
-        @options = ({:response_group => "Large",  :search_index => 'Books' }).merge(options)
+        @options = ({:response_group => "Large, Accessories",  :search_index => 'Books' }).merge(options)
         key = Digest::SHA1.hexdigest("spree_ecs:product:search:#{@query }:#{@options.stringify_keys.sort}")
         Rails.cache.fetch(key) {
           @response = Amazon::Ecs.item_search(@query, @options)
@@ -25,7 +25,7 @@ module SpreeEcs
       #
       def find(asin, options={ })
         key = Digest::SHA1.hexdigest("spree_ecs:product:find:#{asin}:#{options.stringify_keys.sort}")
-        Rails.cache.fetch(key) { mapped(Amazon::Ecs.item_lookup(asin, ({ :response_group => "Large" }).merge(options)).items.first ) }
+        Rails.cache.fetch(key) { mapped(Amazon::Ecs.item_lookup(asin, ({ :response_group => "Large, Accessories" }).merge(options)).items.first ) }
       end
 
       private
@@ -39,6 +39,7 @@ module SpreeEcs
           :id          => item.get('asin'),
           :price       => (item.get('formattedprice').gsub(/\$|,|\ /,'').to_f rescue 0),
           :url         => item.get('detailpageurl'),
+          :taxons      => parse_taxons(item),
           :images      => parse_images(item),
           :variants    => parse_variants(item),
           :variant_options => parse_variant_options(item),
@@ -46,7 +47,15 @@ module SpreeEcs
         }
       end
 
-
+      def parse_taxons(item)
+        item.get_elements("ancestors").map{|x|
+          {
+            :name => (x/"browsenode").at("name/").to_s,
+            :id => (x/"browsenode").at("browsenodeid/").to_s,
+            :search_index => "Books"
+          }
+        }
+      end
       #
       #
       def parse_images(item)

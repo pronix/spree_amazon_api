@@ -4,11 +4,13 @@ module Spree
 
     class Product < Spree::Amazon::Base
 
-      attr_accessor :price, :name, :taxon_id, :id, :description, :images, :url, :variants
+      attr_accessor :price, :name, :taxon_id, :id, :description, :images, :url, :variants, :taxons
       attr_accessor :taxon_name, :binds, :props_str, :sale_props, :props, :created_at, :updated_at
       attr_accessor :variant_options, :variant_attributes
 
+
       class << self
+
 
         def class_name
           "Spree::Amazon::Product"
@@ -48,6 +50,28 @@ module Spree
 
       end # end class << self
 
+      # Save amazon product to base or find on amazon id
+      #
+      def save_to_spree_or_find
+        unless @product = ::Product.find_by_amazon_id(self.id)
+          @product = ::Product.save_from_amazon({
+                                                  :attributes =>{
+                                                    :amazon_id      => self.id,
+                                                    :sku            => @sku,
+                                                    :name           => self.name,
+                                                    :count_on_hand  => 10,
+                                                    :available_on   => 1.day.ago,
+                                                    :description    => self.description,
+                                                    :price          => self.price.to_f
+                                                  },
+                                                  :price => self.price.to_f
+
+                                                })
+        end
+        @product
+      end
+
+
       # Product images
       #
       def images
@@ -82,7 +106,7 @@ module Spree
       end
 
       def taxons
-        [ Spree::Amazon::Taxon.find(self.taxon_id) ].compact
+        @taxons.map{ |x| Spree::Amazon::Taxon.find(x[:id]) }
       end
 
       def price
