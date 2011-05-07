@@ -22,6 +22,11 @@ module Spree
 
       #   [ ]
       # end
+      class << self
+        def build_variants_collection(product, variants=[])
+          Spree::Amazon::VariantCollection.new( (variants).map{ |x| new(x.merge(:product => product)) } )
+        end
+      end
     end
 
   end

@@ -3,7 +3,8 @@ module Spree
     class Taxon < Spree::Amazon::Base
       include ActiveModel::AttributeMethods
       extend ActiveModel::Callbacks
-      attr_accessor :id, :parent_id, :is_parent, :name, :status, :data, :is_root, :search_index
+      attr_accessor :id, :parent_id, :is_parent, :name, :status, :data, :is_root, :search_index, :children
+      attr_accessor :children, :ancestors
       alias :is_parent? :is_parent
 
 
@@ -12,6 +13,11 @@ module Spree
 
       class << self
         attr_accessor :root_category
+
+        def root_taxons
+          ROOT_TAXONS.map{ |x| new(SpreeEcs::Taxon.find(x[:id])) }
+        end
+
         def root_category
           @root_category ||=  new(:name => "Category", :id => "0000", :is_root => true)
           @root_category
@@ -24,19 +30,10 @@ module Spree
         end
 
         def find(cid)
-          new(ROOT_TAXONS.find{ |x| x[:id].to_s == cid.to_s}||mapping(SpreeEcs::Taxon.find(cid)))
+          root_taxons.find{ |x| x.id.to_s == cid.to_s} ||  new(SpreeEcs::Taxon.find(cid))
         end
 
 
-
-        def mapping(raw_browse_node)
-          doc = raw_browse_node.doc
-          { :name => (doc/'browsenodes/browsenode/name/').to_s.gsub('&amp;', '&'),
-            :id => (doc/'browsenodes/browsenode/browsenodeid/').to_s,
-            :search_index => "Books"
-          }
-
-        end
       end # end class << self
 
       def data
@@ -58,41 +55,22 @@ module Spree
         @id.to_s
       end
 
-      # (s.doc/'browsenodes/browsenode/children/browsenode').map{|v| { :name => (v/'name/').to_s, :id => (v/'browsenodeid/').to_s } }
-
       def children
         if @is_root
            ROOT_TAXONS.map{ |x| self.class.new(x) }
-         else
-          if children_category_id = ( (((data.doc/'browsenode/children/browsenode').find{ |x| (x/'name/').to_s == "Categories" })/'browsenodeid/').to_s rescue nil)
-            (SpreeEcs::Taxon.find(children_category_id).doc/'browsenode/children/browsenode').collect{|x|
-              self.class.new({ :id => (x/'browsenodeid/').to_s,
-                               :name => (x/'name/').to_s.gsub('&amp;', '&'),
-                               :search_index => self.search_index,
-                               :parent_id => self.id
-                             })
-            }
-          else
-            (data.doc/'browsenodes/browsenode/children/browsenode').map{|v|
-              self.class.new({ :name => (v/'name/').to_s, :id => (v/'browsenodeid/').to_s,
-                               :search_index => self.search_index, :parent_id => self.id})
-            }
-          end
+        else
+          @_children ||= (@children||[ ]).map{ |v| self.class.new(v)}
+          @_children
         end
-
       end
 
       def parent
-        nil
+        @parent_id ? SpreeEcs::Taxon.find(parent_id) : nil
       end
+
       def ancestors
-        # (data.doc/'browsenode/ancestors/browsenode').collect{|x|
-        #   self.class.new( { :id => (x/'browsenodeid/').to_s,
-        #                     :name => (x/'name/').to_s,
-        #                     :isroot => (x/'iscategoryroot/').to_s.to_i  }
-        #                   )
-        # }
-        [ ]
+        @_ancestors ||=(@ancestors||[]).map{ |v| self.class.new(v)} || []
+        @_ancestors
       end
 
       def self_and_descendants

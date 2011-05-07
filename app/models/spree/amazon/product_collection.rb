@@ -34,6 +34,23 @@ module Spree
       def current_page=(v)
         @current_page = v
       end
+
+      class << self
+        def build(options = { })
+          @collection = new(options[:products])
+          @collection.total_entries = @collection.total_pages = options[:total_entries] || 1
+          @collection.current_page  = options[:current_page] || 1
+          @collection
+        end
+
+        def empty_build
+          @collection = new([])
+          @collection.total_entries = 1
+          @collection.current_page  = 1
+          @collection
+        end
+      end # end class << self
+
     end
 
 
