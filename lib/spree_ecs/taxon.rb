@@ -35,15 +35,14 @@ module SpreeEcs
       end
 
       def ancestors(doc)
-        # (data.doc/'browsenode/ancestors/browsenode').collect{|x|
-        #   self.class.new( { :id => (x/'browsenodeid/').to_s,
-        #                     :name => (x/'name/').to_s,
-        #                     :isroot => (x/'iscategoryroot/').to_s.to_i  }
-        #                   )
-        # }
-        [ ]
-      end
 
+        (doc/"ancestors").map{ |v| parse_browse_node(v/"browsenode")}
+      rescue
+        []
+      end
+      def parse_ancestor_node(node)
+        { :name => node.at('name/').to_s.to_s.gsub('&amp;', '&'), :id => node.at('browsenodeid/')     }
+      end
     end # end class << self
   end
 end

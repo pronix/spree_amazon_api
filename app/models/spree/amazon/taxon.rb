@@ -14,10 +14,6 @@ module Spree
       class << self
         attr_accessor :root_category
 
-        def root_taxons
-          ROOT_TAXONS.map{ |x| new(SpreeEcs::Taxon.find(x[:id])) }
-        end
-
         def root_category
           @root_category ||=  new(:name => "Category", :id => "0000", :is_root => true)
           @root_category
@@ -26,11 +22,11 @@ module Spree
         # Таксоны верхнего уровня
         #
         def roots
-          [ root_category ]
+          ROOT_TAXONS.map{ |x| new(SpreeEcs::Taxon.find(x[:id])) }
         end
 
         def find(cid)
-          root_taxons.find{ |x| x.id.to_s == cid.to_s} ||  new(SpreeEcs::Taxon.find(cid))
+          roots.find{ |x| x.id.to_s == cid.to_s} ||  new(SpreeEcs::Taxon.find(cid))
         end
 
 
