@@ -6,8 +6,8 @@ Gem::Specification.new do |s|
   s.description = 'spree-amazon-api'
   s.required_ruby_version = '>= 1.8.7'
 
-  s.author            = 'Maxim'
-  s.email             = 'parallel588@gmail.com'
+  s.authors            = ['Maxim']
+  s.email              = ['parallel588@gmail.com']
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
