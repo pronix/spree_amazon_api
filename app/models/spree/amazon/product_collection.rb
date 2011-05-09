@@ -4,6 +4,7 @@ module Spree
     # For paginate
     #
     class ProductCollection < Array
+      MAX_TOTAL_PAGES = 200
       attr_accessor_with_default :total_entries, 0
       attr_accessor_with_default :total_pages,   1
       attr_accessor_with_default :current_page,  1
@@ -38,7 +39,8 @@ module Spree
       class << self
         def build(options = { })
           @collection = new(options[:products])
-          @collection.total_entries = @collection.total_pages = options[:total_entries] || 1
+          @max_total_pages = options[:search_index].to_s == "All" ? 5 : MAX_TOTAL_PAGES
+          @collection.total_entries = @collection.total_pages = build_total_pages(options[:total_entries], @max_total_pages)
           @collection.current_page  = options[:current_page] || 1
           @collection
         end
@@ -49,6 +51,17 @@ module Spree
           @collection.current_page  = 1
           @collection
         end
+
+        def build_total_pages(total_pages, max_total_pages)
+          if total_pages.to_i >= max_total_pages.to_i
+            max_total_pages.to_i
+          elsif total_pages.to_i == 0
+            1
+          else
+            total_pages.to_i
+          end
+        end
+
       end # end class << self
 
     end

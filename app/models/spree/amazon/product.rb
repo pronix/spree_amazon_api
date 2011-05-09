@@ -25,8 +25,8 @@ module Spree
         end
 
         # Product for home page
-        def root_page
-          self.search(:q => "*")
+        def root_page(options)
+          self.search(({:q => "", :search_index => "All"}).merge(options) )
         end
 
         # Find product by ASIN
@@ -42,7 +42,9 @@ module Spree
           unless @results.blank?
             Spree::Amazon::ProductCollection.build({ :products => @results[:products].map { |item| new(item) },
                                                      :total_entries => @results[:total_entries],
-                                                     :current_page => @results[:current_page] })
+                                                     :current_page => @results[:current_page],
+                                                     :search_index => options[:search_index]
+                                                   })
           else
             Spree::Amazon::ProductCollection.empty_build
           end

@@ -7,10 +7,10 @@ module SpreeEcs
       #
       def search(options={ })
 
-        @query = options.delete(:q)|| (options[:browse_node] ? '' : '*')
-        options[:sort] = "salesrank" if options[:search_index] && options[:search_index].to_s != 'All'
-        @options = ({:response_group => "Large, Accessories",  :search_index => 'Books' }).merge(options)
-
+        @query = options.delete(:q) || (options[:browse_node] ? '' : '*')
+        @options = (Spree::Config.amazon_options[:query][:options]).merge(options)
+        @options.delete(:sort) if @options[:search_index] && @options[:search_index].to_s == 'All'
+        @query = Spree::Config.amazon_options[:query][:q].to_s.gsub("%{q}", @query )
         cache("spree_ecs:product:search:#{@query }:#{@options.stringify_keys.sort}" ) {
           @response = Amazon::Ecs.item_search(@query, @options)
           {
@@ -60,6 +60,8 @@ module SpreeEcs
           end
         }
         @_taxons
+      rescue
+        []
       end
       #
       #

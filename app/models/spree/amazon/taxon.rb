@@ -8,7 +8,7 @@ module Spree
       alias :is_parent? :is_parent
 
 
-      ROOT_TAXONS = YAML.load( File.open( File.join( Rails.root, 'db', 'amazon_categories.yml' )  ) )
+      ROOT_TAXONS = YAML.load( File.open(File.join( Rails.root, 'db', 'amazon_categories.yml' )  ) )
 
 
       class << self
@@ -22,7 +22,8 @@ module Spree
         # Таксоны верхнего уровня
         #
         def roots
-          ROOT_TAXONS.map{ |x| new(SpreeEcs::Taxon.find(x[:id])) }
+          @@roots ||= ROOT_TAXONS.map{ |x| new(SpreeEcs::Taxon.find(x[:id])) }
+          @@roots
         end
 
         def find(cid)

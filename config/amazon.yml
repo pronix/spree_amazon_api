@@ -1,8 +1,26 @@
 ---
 development:
-  access_key_id: 0XQXXC6YV2C85DX1BF02
-  secret_key: fwLOn0Y/IUXEM8Hk49o7QJV+ryOscbhXRb6CmA5l
+  :configure:
+    :aWS_access_key_id: 0XQXXC6YV2C85DX1BF02
+    :aWS_secret_key: fwLOn0Y/IUXEM8Hk49o7QJV+ryOscbhXRb6CmA5l
+    :response_group: 'Large'
+    :country: 'us'
+  :query:
+    :q: "%{q}"
+    :options:
+      :search_index: 'Books'
+      :response_group: 'Large, Accessories'
+      :sort: "salesrank"
 
 production:
-  access_key_id: 0XQXXC6YV2C85DX1BF02
-  secret_key: fwLOn0Y/IUXEM8Hk49o7QJV+ryOscbhXRb6CmA5l
+  :configure:
+    :aWS_access_key_id: 0XQXXC6YV2C85DX1BF02
+    :aWS_secret_key: fwLOn0Y/IUXEM8Hk49o7QJV+ryOscbhXRb6CmA5l
+    :response_group: 'Large'
+    :country: 'us'
+  :query:
+    :q: "%{q}"
+    :options:
+      :search_index: 'Books'
+      :response_group: 'Large, Accessories'
+      :sort: "salesrank"
