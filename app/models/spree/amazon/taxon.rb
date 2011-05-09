@@ -41,7 +41,7 @@ module Spree
       # Products
       #
       def products
-        Spree::Amazon::Product.search( { :q => '', :browse_node => self.id })
+        SpreeEcs::Taxon.top_sellers(self.id).map{|v| Spree::Amazon::Product.find(v)}
       end
 
       def root

@@ -1,7 +1,14 @@
 module SpreeEcs
   class Taxon < SpreeEcs::Base
     class << self
-
+      def top_sellers(id)
+        cache("spree_ecs:taxon:top-sellers:#{id}"){
+          (Amazon::Ecs.browse_node_lookup(id, {:response_group => "TopSellers"}).
+           doc/"topseller/asin/").map{|x| x.to_s }
+        }
+      rescue
+        []
+      end
       # Find category by BrowseNodeId
       #
       def find(id)
