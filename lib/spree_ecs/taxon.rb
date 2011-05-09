@@ -5,7 +5,7 @@ module SpreeEcs
       # Find category by BrowseNodeId
       #
       def find(id)
-        Rails.cache.fetch("spree_ecs:taxon:#{id}") { parse_browse_node(Amazon::Ecs.browse_node_lookup(id)) }
+        cache("spree_ecs:taxon:#{id}"){ parse_browse_node(Amazon::Ecs.browse_node_lookup(id)) }
       end
 
       private
@@ -18,7 +18,7 @@ module SpreeEcs
           :id => browse_node_id,
           :search_index => "Books",
           :children => children(browse_node_id, doc),
-          :ancestors => []
+          :ancestors => ancestors(doc)
         }
       end
 
@@ -35,13 +35,13 @@ module SpreeEcs
       end
 
       def ancestors(doc)
-
-        (doc/"ancestors").map{ |v| parse_browse_node(v/"browsenode")}
+        (doc/"ancestors").map{ |v| parse_ancestor_node(v/"browsenode")}
       rescue
         []
       end
+
       def parse_ancestor_node(node)
-        { :name => node.at('name/').to_s.to_s.gsub('&amp;', '&'), :id => node.at('browsenodeid/')     }
+        { :name => node.at('name/').to_s.to_s.gsub('&amp;', '&'), :id => node.at('browsenodeid/').to_s     }
       end
     end # end class << self
   end

@@ -48,27 +48,33 @@ module Spree
           end
         end
 
+        def save_to_spree_or_find(id)
+          unless @product = ::Product.find_by_amazon_id(self.id)
+            @product = find(id).try(:save_to_spree)
+          end
+          @product
+        end
+
       end # end class << self
 
       # Save amazon product to base or find on amazon id
       #
-      def save_to_spree_or_find
-        unless @product = ::Product.find_by_amazon_id(self.id)
-          @product = ::Product.save_from_amazon({
-                                                  :attributes =>{
-                                                    :amazon_id      => self.id,
-                                                    :sku            => @sku,
-                                                    :name           => self.name,
-                                                    :count_on_hand  => 10,
-                                                    :available_on   => 1.day.ago,
-                                                    :description    => self.description,
-                                                    :price          => self.price.to_f
-                                                  },
-                                                  :price => self.price.to_f
+      def save_to_spree
+        ::Product.save_from_amazon({
+                                     :attributes =>{
+                                       :amazon_id      => self.id,
+                                       :sku            => self.id,
+                                       :name           => self.name,
+                                       :count_on_hand  => 10,
+                                       :available_on   => 1.day.ago,
+                                       :description    => self.description,
+                                       :price          => self.price.to_f
+                                     },
 
-                                                })
-        end
-        @product
+                                     :price => self.price.to_f,
+                                     :images => self.images
+
+                                   })
       end
 
 

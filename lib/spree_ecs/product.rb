@@ -10,8 +10,8 @@ module SpreeEcs
         @query = options.delete(:q)|| (options[:browse_node] ? '' : '*')
         options[:sort] = "salesrank" if options[:search_index] && options[:search_index].to_s != 'All'
         @options = ({:response_group => "Large, Accessories",  :search_index => 'Books' }).merge(options)
-        key = Digest::SHA1.hexdigest("spree_ecs:product:search:#{@query }:#{@options.stringify_keys.sort}")
-        Rails.cache.fetch(key) {
+
+        cache("spree_ecs:product:search:#{@query }:#{@options.stringify_keys.sort}" ) {
           @response = Amazon::Ecs.item_search(@query, @options)
           {
             :total_entries => @response.total_pages,
@@ -24,8 +24,9 @@ module SpreeEcs
       # Find product by asin
       #
       def find(asin, options={ })
-        key = Digest::SHA1.hexdigest("spree_ecs:product:find:#{asin}:#{options.stringify_keys.sort}")
-        Rails.cache.fetch(key) { mapped(Amazon::Ecs.item_lookup(asin, ({ :response_group => "Large, Accessories" }).merge(options)).items.first ) }
+        cache("spree_ecs:product:find:#{asin}:#{options.stringify_keys.sort}") do
+          mapped(Amazon::Ecs.item_lookup(asin, ({ :response_group => "Large, Accessories" }).merge(options)).items.first )
+        end
       end
 
       private
@@ -48,13 +49,17 @@ module SpreeEcs
       end
 
       def parse_taxons(item)
-        item.get_elements("ancestors").map{|x|
-          {
-            :name => (x/"browsenode").at("name/").to_s,
-            :id => (x/"browsenode").at("browsenodeid/").to_s,
-            :search_index => "Books"
-          }
+        @_taxons = []
+        item.get_elements("ancestors").each{|x|
+          @node_name  = (x/"browsenode").at("name/").to_s
+          @node_id    = (x/"browsenode").at("browsenodeid/").to_s
+          if !@node_name.blank? &&
+              @node_name !~ /products|categories|features/i &&
+              !@_taxons.map{|v| v[:id] }.include?(@node_id)
+            @_taxons << { :name => @node_name, :id => @node_id, :search_index => "Books"  }
+          end
         }
+        @_taxons
       end
       #
       #

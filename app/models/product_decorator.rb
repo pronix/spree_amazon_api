@@ -5,8 +5,8 @@ Product.class_eval do
       if @spree_product = create!(options[:attributes])
         @master = @spree_product.master
         @master.send(:write_attribute, :price, options[:price] )
-        (options[:images]||[]).map{ |img|
-          @spree_product.images.create(:attachment => open(img))
+        (options[:images]||[]).map{ |image|
+          @spree_product.images.create(:attachment => open(image.attachment.url(:large)))
         }
       end
       @spree_product
