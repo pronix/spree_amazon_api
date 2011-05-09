@@ -8,7 +8,7 @@ module Spree
       alias :is_parent? :is_parent
 
 
-      ROOT_TAXONS = YAML.load( File.open(File.join(File.dirname(__FILE__), "../../../../data/category.yml")  ) )
+      ROOT_TAXONS = YAML.load( File.open( File.join( Rails.root, 'db', 'amazon_categories.yml' )  ) )
 
 
       class << self
