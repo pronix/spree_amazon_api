@@ -26,7 +26,7 @@ module Spree
 
         # Product for home page
         def root_page(options)
-          self.search(({:q => "", :search_index => "All"}).merge(options) )
+          self.search(({:q => " *", :search_index => "All"}).merge(options) )
         end
 
         # Find product by ASIN
