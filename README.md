@@ -1,12 +1,10 @@
-= Spree <-> Amazon
-
  Spree <-> Amazon
 ===========================================
 
 Installation
 ------------
-Add to Gemfile
 
+Add to Gemfile:
   gem "spree_amazon_api", :git => "git@github.com:pronix/spree_amazon_api.git"
 
 run task:
@@ -17,7 +15,8 @@ run migrate: (add amazon_id to product table)
 
 Configure Amazon access:
 -----------------------
-add amazon.yml file to app root path.
+Change access key in amazon.yml file.( Rails.root/config)
+
 example:
 
   development:
