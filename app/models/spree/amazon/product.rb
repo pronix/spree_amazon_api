@@ -35,6 +35,10 @@ module Spree
           new( SpreeEcs::Product.find(product_asin, { :response_group => "Large, Variations" }))
         end
 
+        def multi_find(asins)
+          SpreeEcs::Product.multi_find(asins, { :response_group => "Large, Variations" }).map{|v| new(v) }
+        end
+
         # Search products
         #
         def search(options={ })

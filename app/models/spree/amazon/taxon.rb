@@ -41,7 +41,7 @@ module Spree
       # Products
       #
       def products
-        SpreeEcs::Taxon.top_sellers(self.id).map{|v| Spree::Amazon::Product.find(v)}
+        Spree::Amazon::Product.multi_find(SpreeEcs::Taxon.top_sellers(self.id).join(', '))
       end
 
       def root

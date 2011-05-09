@@ -12,6 +12,7 @@ module SpreeEcs
         @options.delete(:sort) if @options[:search_index] && @options[:search_index].to_s == 'All'
         @query = Spree::Config.amazon_options[:query][:q].to_s.gsub("%{q}", @query )
         cache("spree_ecs:product:search:#{@query }:#{@options.stringify_keys.sort}" ) {
+          log "search products query:#{ @query} || options #{options.inspect}"
           @response = Amazon::Ecs.item_search(@query, @options)
           {
             :total_entries => @response.total_pages,
@@ -25,7 +26,17 @@ module SpreeEcs
       #
       def find(asin, options={ })
         cache("spree_ecs:product:find:#{asin}:#{options.stringify_keys.sort}") do
-          mapped(Amazon::Ecs.item_lookup(asin, ({ :response_group => "Large, Accessories" }).merge(options)).items.first )
+          log("find product asin:#{asin} || options: #{options.inspect}")
+          mapped(Amazon::Ecs.item_lookup(asin, ({ :response_group => "Large, Accessories" }).merge(options)).items.first)
+        end
+      end
+
+      # MultiFind product by asin
+      #
+      def multi_find(asins, options={ })
+        cache("spree_ecs:product:multifind:#{asins}:#{options.stringify_keys.sort}") do
+          log(" multi find product asin:#{asins} || options: #{options.inspect}")
+          Amazon::Ecs.item_lookup(asins, ({ :response_group => "Large, Accessories" }).merge(options)).items.map{|v| mapped(v) }
         end
       end
 
