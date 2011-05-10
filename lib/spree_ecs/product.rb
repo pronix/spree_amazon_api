@@ -46,11 +46,11 @@ module SpreeEcs
       #
       def mapped(item)
         {
-          :name        => item.get('itemattributes/title'),
-          :description => item.get('editorialreviews/editorialreview/content'),
-          :id          => item.get('asin'),
-          :price       => (item.get('formattedprice').gsub(/\$|,|\ /,'').to_f rescue 0),
-          :url         => item.get('detailpageurl'),
+          :name        => item.get('ItemAttributes/Title'),
+          :description => item.get('EditorialReviews/EditorialReview/Content'),
+          :id          => item.get('ASIN'),
+          :price       => (item.get('OfferSummary/LowestNewPrice/FormattedPrice').gsub(/\$|,|\ /,'').to_f rescue 0),
+          :url         => item.get('DetailPageURL'),
           :taxons      => parse_taxons(item),
           :images      => parse_images(item),
           :variants    => parse_variants(item),
@@ -61,9 +61,9 @@ module SpreeEcs
 
       def parse_taxons(item)
         @_taxons = []
-        item.get_elements("ancestors").each{|x|
-          @node_name  = (x/"browsenode").at("name/").to_s
-          @node_id    = (x/"browsenode").at("browsenodeid/").to_s
+        item.get_elements("Ancestors").each{|x|
+          @node_name  = (x/"BrowseNode").at("Name").text
+          @node_id    = (x/"BrowseNode").at("BrowseNodeId/").text
           if !@node_name.blank? &&
               @node_name !~ /products|categories|features/i &&
               !@_taxons.map{|v| v[:id] }.include?(@node_id)
@@ -78,23 +78,23 @@ module SpreeEcs
       #
       def parse_images(item)
         result_images = []
-        unless item.get('smallimage/url').blank?
+        unless item.get('SmallImage/URL').blank?
           result_images  << {
-            :small   => item.get('smallimage/url'),
-            :mini    => item.get('smallimage/url'),
-            :product => item.get('mediumimage/url'),
-            :large   => item.get('largeimage/url')
+            :small   => item.get('SmallImage/URL'),
+            :mini    => item.get('SmallImage/URL'),
+            :product => item.get('MediumImage/URL'),
+            :large   => item.get('LargeImage/URL')
           }
         end
-        @imagesets = item.get_element("imagesets").get_elements("imageset") rescue nil
+        @imagesets = item.get_element("ImageSets").get_elements("ImageSet") rescue nil
         unless @imagesets.blank?
           @imagesets.each do |imageset|
             if imageset.attributes['category'].to_s =~ /variant/
               result_images << {
-                :mini => imageset.get_hash("smallimage")[:url],
-                :small => imageset.get_hash("smallimage")[:url],
-                :product => imageset.get_hash("mediumimage")[:url],
-                :large => imageset.get_hash("largeimage")[:url]
+                :mini => imageset.get_hash("SmallImage")[:url],
+                :small => imageset.get_hash("SmallImage")[:url],
+                :product => imageset.get_hash("MediumImage")[:url],
+                :large => imageset.get_hash("LargeImage")[:url]
               }
             end
           end
@@ -105,8 +105,8 @@ module SpreeEcs
       #
       #
       def parse_variants(item)
-        if item.get("variations/totalvariations").to_i  > 0
-          item.get_elements("variations/item").map{ |v| mapped(v) }
+        if item.get("Variations/TotalVariations").to_i  > 0
+          item.get_elements("Variations/Item").map{ |v| mapped(v) }
         else
           []
         end
@@ -115,13 +115,13 @@ module SpreeEcs
       #
       #
       def parse_variant_options(item)
-        item.get_elements("variationattributes/variationattribute").map(&:get_hash)
+        item.get_elements("VariationAttributes/VariationAttribute").map(&:get_hash)
       rescue
         [ ]
       end
 
       def parse_variant_attributes(item)
-        item.get_element("itemattributes").get_hash
+        item.get_element("ItemAttributes").get_hash
       rescue
         []
       end

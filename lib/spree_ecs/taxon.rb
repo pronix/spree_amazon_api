@@ -5,7 +5,7 @@ module SpreeEcs
         cache("spree_ecs:taxon:top-sellers:#{id}"){
           log(" taxon top sellers: #{id} ")
           (Amazon::Ecs.browse_node_lookup(id, {:response_group => "TopSellers"}).
-           doc/"topseller/asin/").map{|x| x.to_s }
+           doc/"TopSeller/ASIN/").map{|x| x.to_s }
         }
       rescue
         []
@@ -24,9 +24,9 @@ module SpreeEcs
 
       def parse_browse_node(raw_data)
         doc = raw_data.doc
-        browse_node_id  = (doc/'browsenodes/browsenode/browsenodeid/').to_s
+        browse_node_id  = (doc/'BrowseNodes/BrowseNode/BrowseNodeId/').text
         {
-          :name => (doc/'browsenodes/browsenode/name/').to_s.gsub('&amp;', '&'),
+          :name => (doc/'BrowseNodes/BrowseNode/Name').text.to_s.gsub('&amp;', '&'),
           :id => browse_node_id,
           :search_index => "Books",
           :children => children(browse_node_id, doc),
@@ -35,10 +35,10 @@ module SpreeEcs
       end
 
       def children(browse_node_id, doc)
-        (doc/'browsenodes/browsenode/children/browsenode').map{|v|
+        (doc/'BrowseNodes/BrowseNode/Children/BrowseNode').map{|v|
           {
-            :name         => (v/'name/').to_s.to_s.gsub('&amp;', '&'),
-            :id           => (v/'browsenodeid/').to_s,
+            :name         => (v/'Name/').to_s.to_s.gsub('&amp;', '&'),
+            :id           => (v/'BrowseNodeId/').to_s,
             :search_index => "Books",
             :parent_id    => browse_node_id
           }
@@ -47,13 +47,13 @@ module SpreeEcs
       end
 
       def ancestors(doc)
-        (doc/"ancestors").map{ |v| parse_ancestor_node(v/"browsenode")}
+        (doc/"Ancestors").map{ |v| parse_ancestor_node(v/"BrowseNode")}
       rescue
         []
       end
 
       def parse_ancestor_node(node)
-        { :name => node.at('name/').to_s.to_s.gsub('&amp;', '&'), :id => node.at('browsenodeid/').to_s     }
+        { :name => node.at('Name/').to_s.gsub('&amp;', '&'), :id => node.at('BrowseNodeId/').to_s     }
       end
     end # end class << self
   end
