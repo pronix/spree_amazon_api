@@ -17,6 +17,8 @@ Gem::Specification.new do |s|
 
   s.add_dependency('rails', '>= 3.0.7')
   s.add_dependency('spree_core', '>= 0.50.2')
+  s.add_dependency('spree_auth', '>= 0.50.2')
   s.add_dependency('amazon-ecs', '>= 1.2.1')
-  s.add_development_dependency("rspec", ">= 2.5.0")
+  s.add_development_dependency("rspec", ">= 2.5.2")
+   s.add_development_dependency("rspec-rails", ">= 2.5.0")
 end
