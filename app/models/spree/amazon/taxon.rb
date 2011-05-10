@@ -3,7 +3,7 @@ module Spree
     class Taxon < Spree::Amazon::Base
       include ActiveModel::AttributeMethods
       extend ActiveModel::Callbacks
-      attr_accessor :id, :parent_id, :is_parent, :name, :status, :data, :is_root, :search_index, :children
+      attr_accessor :id, :parent_id, :is_parent, :name, :status, :is_root, :search_index, :children
       attr_accessor :children, :ancestors
       alias :is_parent? :is_parent
 
@@ -22,7 +22,7 @@ module Spree
         # Таксоны верхнего уровня
         #
         def roots
-          @@roots ||= ROOT_TAXONS.map{ |x| new(SpreeEcs::Taxon.find(x[:id])) }
+          @@roots ||= ROOT_TAXONS.map{ |x| new(:id => x[:id], :name => x[:name], :children => [])  }
           @@roots
         end
 
@@ -33,15 +33,11 @@ module Spree
 
       end # end class << self
 
-      def data
-        @data ||= SpreeEcs::Taxon.find(self.id)
-        @data
-      end
-
       # Products
       #
       def products
-        Spree::Amazon::Product.multi_find(SpreeEcs::Taxon.top_sellers(self.id).join(', '))
+        @taxon_products ||= Spree::Amazon::Product.multi_find(SpreeEcs::Taxon.top_sellers(self.id).join(', '))
+        @taxon_products
       end
 
       def root
@@ -62,7 +58,7 @@ module Spree
       end
 
       def parent
-        @parent_id ? SpreeEcs::Taxon.find(parent_id) : nil
+        ancestors.first
       end
 
       def ancestors
