@@ -13,13 +13,13 @@ default: &DEFAULT
       :sort: "salesrank"
 
 development:
-  <<: *default
+  <<: *DEFAULT
 
 test:
-  <<: *default
+  <<: *DEFAULT
 cucumber:
-  <<: *default
+  <<: *DEFAULT
 
 production:
-  <<: *default
+  <<: *DEFAULT
 
