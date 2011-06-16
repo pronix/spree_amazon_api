@@ -9,12 +9,15 @@ Installation
 ------------
 
 Add to Gemfile:
+
     gem "spree_amazon_api", :git => "git@github.com:pronix/spree_amazon_api.git"
 
 run task:
+
     rake spree_amazon_api:install
 
 run migrate: (add amazon_id to product table)
+
     rake db:migrate
 
 Root taxons define in file: db/amazon_categories.yml
