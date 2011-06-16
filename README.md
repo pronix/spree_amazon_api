@@ -3,7 +3,7 @@
 
 Requirements
 ------------
-Spree >= 0.50.2
+Spree >= 0.60.0
 
 Installation
 ------------
@@ -59,6 +59,7 @@ Search options
 --------------
 
 To customize  the search, set search format  in  param :q(Rails.root/config/amazon.yml)
+
 For instance: if you set :q with "%{q} made in Vermont" then user query "tools" will be replaced with "tools made in Vermont"
 
 
