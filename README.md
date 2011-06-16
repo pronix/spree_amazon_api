@@ -18,9 +18,7 @@ Root taxons in file: db/amazon_categories.yml
 Configure Amazon access:
 -----------------------
 Setting amazon options in amazon.yml file.( Rails.root/config)
-
 example:
-
   ---
   development:
     :configure:                                                  # acces options
@@ -47,4 +45,3 @@ example:
         :search_index: 'Books'
         :response_group: 'Large, Accessories'
         :sort: "salesrank"
-
