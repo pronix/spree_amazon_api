@@ -54,9 +54,9 @@ module Spree
           end
         end
 
-        def save_to_spree_or_find(id)
-          unless @product = ::Product.find_by_amazon_id(self.id)
-            @product = find(id).try(:save_to_spree)
+        def save_to_spree_or_find(amazon_id_or_id)
+          unless @product = ::Product.find_by_amazon_id(amazon_id_or_id)
+            @product = find(amazon_id_or_id).try(:save_to_spree)
           end
           @product
         end
