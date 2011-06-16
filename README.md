@@ -30,10 +30,10 @@ Setting amazon options in amazon.yml file( Rails.root/config).
 
     development:
       :configure:                                                   # acces options
-    :aWS_access_key_id: 0XQXXC6YV2C85DX1BF02
-    :aWS_secret_key: fwLOn0Y/IUXEM8Hk49o7QJV+ryOscbhXRb6CmA5l
-    :response_group: 'Large'
-    :country: 'us'                                                  # region
+        :aWS_access_key_id: 0XQXXC6YV2C85DX1BF02
+        :aWS_secret_key: fwLOn0Y/IUXEM8Hk49o7QJV+ryOscbhXRb6CmA5l
+        :response_group: 'Large'
+        :country: 'us'                                                  # region
        :query:                                                      # search options
          :q: "%{q}"                                                 # %{q} replace on user keywords
          :options:
