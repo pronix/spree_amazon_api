@@ -1,17 +1,21 @@
  Spree <-> Amazon
 ===========================================
 
+Requirements
+------------
+Spree >= 0.50.2
+
 Installation
 ------------
 
 Add to Gemfile:
-  gem "spree_amazon_api", :git => "git@github.com:pronix/spree_amazon_api.git"
+    gem "spree_amazon_api", :git => "git@github.com:pronix/spree_amazon_api.git"
 
 run task:
-   rake spree_amazon_api:install
+    rake spree_amazon_api:install
 
 run migrate: (add amazon_id to product table)
-   rake db:migrate
+    rake db:migrate
 
 Root taxons define in file: db/amazon_categories.yml
 
@@ -19,14 +23,14 @@ Configure Amazon access:
 -----------------------
 Setting amazon options in amazon.yml file( Rails.root/config).
 
-example:
+#### Configure example:
 
     development:
-      :configure:                                                  # acces options
+      :configure:                                                   # acces options
     :aWS_access_key_id: 0XQXXC6YV2C85DX1BF02
     :aWS_secret_key: fwLOn0Y/IUXEM8Hk49o7QJV+ryOscbhXRb6CmA5l
     :response_group: 'Large'
-    :country: 'us'                                             # region
+    :country: 'us'                                                  # region
        :query:                                                      # search options
          :q: "%{q}"                                                 # %{q} replace on user keywords
          :options:
