@@ -54,3 +54,11 @@ Setting amazon options in amazon.yml file( Rails.root/config).
           :response_group: 'Large, Accessories'
           :sort: "salesrank"
 
+
+Search options
+--------------
+
+To customize  the search, set search format  in  param :q(Rails.root/config/amazon.yml)
+For instance: if you set :q with "%{q} made in Vermont" then user query "tools" will be replaced with "tools made in Vermont"
+
+
